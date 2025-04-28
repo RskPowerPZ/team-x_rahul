@@ -132,6 +132,9 @@ def handle_requests():
 
     def process_request():
         data = load_tokens(server_name)
+        if not data or not isinstance(data, list) or len(data) == 0:
+            return {"error": "Token list is empty or invalid for the given server_name."}, 400
+        
         token = data[0]['token']
         encrypt = enc(uid)
         
@@ -140,10 +143,10 @@ def handle_requests():
         data = json.loads(jsone)
         before_like = data['AccountInfo'].get('Likes', None)
         if before_like is None:
-        	before_like = int("0")
+            before_like = int("0")
         else:
-        	before_like = int(before_like)
-        print(before_like)
+            before_like = int(before_like)
+
         if server_name == "IND":
             url = "https://client.ind.freefiremobile.com/LikeProfile"
         elif server_name in {"BR", "US", "SAC", "NA"}:
@@ -160,10 +163,12 @@ def handle_requests():
         id = int(data['AccountInfo']['UID'])
         name = str(data['AccountInfo']['PlayerNickname'])
         like_given = after_like - before_like
+
         if like_given != 0:
-        	status = 1
+            status = 1
         else:
-        	status = 2
+            status = 2
+
         result = {
             "LikesGivenByAPI": like_given,
             "LikesafterCommand": after_like,
