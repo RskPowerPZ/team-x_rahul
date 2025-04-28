@@ -19,13 +19,18 @@ app = Flask(__name__)
 def load_tokens(server_name):
     if server_name == "IND":
         with open("token_ind.json", "r") as f:
-            return json.load(f)
+            data = json.load(f)
     elif server_name in {"BR", "US", "SAC", "NA"}:
         with open("token_br.json", "r") as f:
-            return json.load(f)
+            data = json.load(f)
     else:
         with open("token_bd.json", "r") as f:
-            return json.load(f)
+            data = json.load(f)
+    
+    # Filter out invalid "N/A" tokens
+    valid_tokens = [token for token in data if token.get("token") and token["token"] != "N/A"]
+    
+    return valid_tokens
     
 def encrypt_message(plaintext):
     key = b'Yg&tc%DEuh6%Zc^8'
