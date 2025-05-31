@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: akiru-bot-hosting
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
+    envVars:
+      - key: RENDER
+        value: "true"
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 1
