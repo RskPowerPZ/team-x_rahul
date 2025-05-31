@@ -1,7 +1,4 @@
-Flask[async]
-requests
-aiohttp
-googleapis-common-protos
-pycryptodome
-protobuf
-Werkzeug
+Flask==2.3.2
+Werkzeug==2.3.6
+gunicorn==20.1.0
+gevent==22.10.2
