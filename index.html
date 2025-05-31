@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="user-info">
+        <h2>Welcome, {{ username }}!</h2>
+        <p>You can upload up to 5 files (Python/JS scripts)</p>
+    </div>
+    
+    <div class="upload-section">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file-upload" class="file-upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Choose File (.py, .js, .zip)</span>
+                    <input type="file" name="file" id="file-upload" required>
+                </label>
+                <button type="submit" class="upload-btn">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="file-list">
+        {% if files %}
+            <div class="file-list-header">
+                <h3>Your Files</h3>
+                <span>{{ files|length }}/5 files used</span>
+            </div>
+            
+            <div class="files-grid">
+                {% for file in files %}
+                <div class="file-card {% if file.running %}running{% else %}stopped{% endif %}">
+                    <div class="file-info">
+                        <h4>{{ file.name }}</h4>
+                        <span class="file-type">{{ file.type|upper }}</span>
+                    </div>
+                    
+                    <div class="file-status">
+                        {% if file.running %}
+                            <span class="status-badge running">
+                                <i class="fas fa-circle"></i> Running
+                            </span>
+                        {% else %}
+                            <span class="status-badge stopped">
+                                <i class="fas fa-circle"></i> Stopped
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="file-actions">
+                        {% if file.running %}
+                            <a href="/control/{{ file.id }}/stop" class="btn stop-btn">
+                                <i class="fas fa-stop"></i> Stop
+                            </a>
+                            <a href="/logs/{{ file.id }}" class="btn logs-btn" target="_blank">
+                                <i class="fas fa-terminal"></i> Logs
+                            </a>
+                        {% else %}
+                            <a href="/control/{{ file.id }}/start" class="btn start-btn">
+                                <i class="fas fa-play"></i> Start
+                            </a>
+                        {% endif %}
+                        
+                        <form action="/delete/{{ file.id }}" method="post" onsubmit="return confirm('Delete this file?')">
+                            <button type="submit" class="btn delete-btn">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-files">
+                <i class="fas fa-folder-open"></i>
+                <p>No files uploaded yet</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
